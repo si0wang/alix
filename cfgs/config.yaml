@@ -1,0 +1,51 @@
+defaults:
+  - _self_
+  - algo@_global_: ALIX
+  - rb@_global_: efficient
+  - task@_global_: quadruped_walk
+  - override hydra/launcher: submitit_local
+
+# eval
+eval_every_frames: 10000
+num_eval_episodes: 10
+# snapshot
+save_snapshot: true
+# checkpointing
+save_checkpoints: true
+checkpoint_every_frames: 500000
+# replay buffer
+replay_buffer_size: 1000000
+nstep: 3
+batch_size: 256
+discount: 0.99
+replay_buffer_num_workers: 4
+# misc
+seed: 1
+device: cuda
+save_video: true
+save_train_video: false
+use_tb: true
+# experiment
+experiment: exp
+# srank
+calculate_srank: false
+# debug
+anomaly_detection: false
+# log folder
+logging_folder: exp_local
+
+hydra:
+  run:
+    dir: /fs/cml-projects/Pretrain_MBRL/alix/${agent_name}/${task_name}/${seed}
+  sweep:
+    dir: /fs/cml-projects/Pretrain_MBRL/alix/${agent_name}/${task_name}/${seed}_${experiment}
+    subdir: ${hydra.job.num}
+  launcher:
+    timeout_min: 4300
+    cpus_per_task: 10
+    gpus_per_node: 1
+    tasks_per_node: 1
+    mem_gb: 160
+    nodes: 1
+    submitit_folder: /fs/cml-projects/Pretrain_MBRL/alix/${agent_name}/${task_name}/${seed}_${experiment}/.slurm
+
